@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="styles.css">
+<head>
+    
+    <title>
+        ToDo apps
+    </title>
+</head>
+
+<script>
+    function editSave(key) {
+        fetch("http://localhost:3000/todos/"+key, {
+            method: "PUT",
+            body: JSON.stringify({
+                title: document.getElementById(key+"title").value,
+                description: document.getElementById(key+"description").value
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((resp)=>resp.json().then((data)=>{
+                console.log(" updated "+key);
+                const row = document.getElementById(data.id);
+                
+                row.cells[0].removeChild(row.cells[0].firstElementChild);
+                row.cells[0].innerText = data.title;
+
+                row.cells[1].removeChild(row.cells[1].firstElementChild);
+                row.cells[1].innerText = data.description;
+
+                row.cells[2].removeChild(row.cells[2].firstElementChild);
+                var editbtn = document.createElement("button");
+                editbtn.innerHTML = "Edit";
+                editbtn.setAttribute("onClick", "editToDo("+key+")");
+                row.cells[2].appendChild(editbtn);
+            }))
+    }
+
+    function editToDo(key) {
+        const todo = document.getElementById(key);
+        const title = todo.cells[0].innerText;
+        const description = todo.cells[1].innerText;
+
+        let newTitle = document.createElement("input");
+        newTitle.setAttribute("type", "text");
+        newTitle.setAttribute("id", key+"title");
+        newTitle.value = title;
+        console.log(title);
+
+        todo.cells[0].innerText = "";
+        todo.cells[0].appendChild(newTitle);
+
+        let newDesc = document.createElement("input");
+        newDesc.setAttribute("type", "text");
+        newDesc.setAttribute("id", key+"description");
+        newDesc.value = description;
+        console.log(description);
+
+        todo.cells[1].innerText = "";
+        todo.cells[1].appendChild(newDesc);
+
+        todo.cells[2].removeChild(todo.cells[2].firstElementChild);
+
+
+        let editbtn = document.createElement("button");
+        editbtn.innerHTML="Save";
+        editbtn.setAttribute("onClick", "editSave("+key+")")
+        todo.cells[2].appendChild(editbtn);
+
+    }
+
+    function deleteToDo(key){
+        fetch("http://localhost:3000/todos/"+key, {
+            method: "DELETE",
+        }).then(()=>console.log("deleted Todo id "+key));
+        let todo = document.getElementById(key);
+        todo.remove();
+    }
+
+    function getData() {
+        fetch("http://localhost:3000/todos", {
+            method: "GET"
+        }).then((resp)=>resp.json().then(
+            (data)=>{
+                console.log(data); 
+                for(var key in data) {
+                    let table = document.getElementById("ToDoTable");
+                    let row = table.insertRow(-1);
+                    row.setAttribute("id", key);
+                    let c1 = row.insertCell(0);
+                    c1.innerText = data[key].title;
+
+                    let c2 = row.insertCell(1);
+                    c2.innerText = data[key].description;
+
+                    let c3 = row.insertCell(2);
+                    var editbtn = document.createElement("button");
+                    editbtn.innerHTML = "Edit";
+                    editbtn.setAttribute("onClick", "editToDo("+key+")")
+
+                    c3.appendChild(editbtn);
+
+                    
+                    let c4 = row.insertCell(3);
+                    var delbtn = document.createElement("button");
+                    delbtn.innerHTML = "Delete";
+                    delbtn.setAttribute("onClick", "deleteToDo("+key+")")
+
+                    c4.appendChild(delbtn);
+
+                }
+            }))
+    }
+    function onPress() {
+        fetch("http://localhost:3000/todos", {
+            method: "POST",
+            body: JSON.stringify({
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((resp)=>resp.json().then((data)=>{
+            let table = document.getElementById("ToDoTable");
+            let row = table.insertRow(-1);
+            row.setAttribute("id", data.id);
+            let c1 = row.insertCell(0);
+            c1.innerText = data.title;
+
+            let c2 = row.insertCell(1);
+            c2.innerText = data.description;
+
+            let c3 = row.insertCell(2);
+            var editbtn = document.createElement("button");
+            editbtn.innerHTML = "Edit";
+            editbtn.setAttribute("onClick", "editToDo("+data.id+")")
+
+            c3.appendChild(editbtn);
+
+            
+            let c4 = row.insertCell(3);
+            var delbtn = document.createElement("button");
+            delbtn.innerHTML = "Delete";
+            delbtn.setAttribute("onClick", "deleteToDo("+data.id+")")
+
+            c4.appendChild(delbtn);
+
+            
+
+        }))
+        //empty value
+        document.getElementById("title").value = "";
+        document.getElementById("description").value = "";
+    }
+    getData();
+</script>
+
+<style>
+
+</style>
+
+<body>
+    ToDo Title
+    <input type="text" id="title"></input>
+    Description
+    <input type="text" id="description"></input>
+    <button onclick="onPress()">Add ToDo</button>
+    <br>
+    <br>
+</body>
+
+<table id="ToDoTable" class="styled-table">
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th style="width: 40px;">Edit</th>
+        <th style="width: 40px;">Delete</th>
+    </tr>
+</table>
+
+</html>
