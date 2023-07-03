@@ -48,7 +48,7 @@ const cors = require("cors");
 //app.use(cors());
 
 var filename = "./todos.json"
-app.use(express.static('assets'));
+
 app.use(bodyParser.json());
 
 function getAllTodos(req, res){
