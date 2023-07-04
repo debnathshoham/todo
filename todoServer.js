@@ -150,6 +150,10 @@ app.get("/",  (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
   //res.sendFile(path.join(__dirname, "styles.css"));
 })
+app.get('/styles.css', (req, res) => {
+  res.sendFile(path.join(__dirname, "styles.css"));
+});
+
 app.get("/todos", getAllTodos);
 app.get("/todos/:id", getTodoById);
 app.post("/todos", createTodo);
