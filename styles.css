@@ -1,8 +1,9 @@
 .styled-table {
+    padding-top: 20px;
     padding-left: 20px;
     border-collapse: collapse;
     border-radius: 8px;
-    margin: 25px 0;
+    margin: auto;
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 50%;
@@ -79,4 +80,20 @@ button:disabled {
 body {
     background: rgb(2,0,36);
     background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(246,243,243,1) 0%, rgba(151,198,208,1) 95%);
+    margin: auto;
+    padding: 20px;
+    
+}
+
+.inp {
+    width: 45%;
+    
+    margin: auto;
+    margin-left: auto;
+    padding: 15px 10px;
+}
+
+button.inp {
+    display: flex;
+    justify-content: space-between;
 }
